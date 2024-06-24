@@ -2,18 +2,24 @@
 
 This session is part of [**Biodiversity Genomics Academy 2024**](https://thebgacademy.org/)
 
-[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/thebgacademy/TEMPLATE)
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/thebgacademy/genomeassembly)
 
 ## Session Leader(s)
+
+Wellcome Genome Campus
+
+- Ksenia Krasheninnikova, PhD
 
 
 ## Description
 
+The Tree of Life genome assembly pipeline, written in Nextflow
 
 
 ## Prerequisites
 
 1. Understanding of linux command line basics
+2. Knowledge of Nextflow
 
 >[!warning] "Please make sure you MEET THE PREREQUISITES and READ THE DESCRIPTION above"
 >
