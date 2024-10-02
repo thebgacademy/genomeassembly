@@ -27,9 +27,9 @@ tasks:
 # https://github.com/sanger-tol/curationpretext
   init: |
     mkdir -p /workspace/pipeline
-	
-	cd /workspace/pipeline
-	
+
+    cd /workspace/pipeline
+
     git clone https://github.com/sanger-tol/genomeassembly.git
 
 ports:
