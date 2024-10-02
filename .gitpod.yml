@@ -13,7 +13,7 @@ tasks:
     gp sync-done bundle
 
     mamba install conda-forge::singularity
-	
+
     cd /workspace/
       
     wget -qO- https://get.nextflow.io | bash
