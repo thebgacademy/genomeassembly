@@ -12,6 +12,23 @@ tasks:
     mamba create -n metagenomics -c bioconda metamdbg -y
     gp sync-done bundle
 
+- name: Install Nextflow
+# https://www.nextflow.io/docs/latest/getstarted.html
+  init: |
+    cd /workspace/
+      
+    wget -qO- https://get.nextflow.io | bash
+
+    chmod +x nextflow
+
+    sudo mv nextflow /usr/local/bin
+
+- name: Install Genome Assembly Pipeline
+# https://github.com/sanger-tol/curationpretext
+  init: |
+    cd /workspace
+    git clone -b 0.10.0 https://github.com/sanger-tol/genomeassembly.git
+
 ports:
   - port: 5900
     onOpen: ignore
