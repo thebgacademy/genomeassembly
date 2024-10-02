@@ -1,7 +1,7 @@
 image: gitpod/workspace-full-vnc
 
 tasks:
-- name: SETUP - MAMBA ENVIRONMENT
+- name: SETUP ENVIRONMENT
   init: |
     cd /workspace
     wget "https://github.com/conda-forge/miniforge/releases/download/24.3.0-0/Mambaforge-24.3.0-0-Linux-x86_64.sh"
@@ -9,12 +9,11 @@ tasks:
 
     /workspace/mambaforge/bin/mamba init bash
     source ${HOME}/.bashrc
-    mamba create -n metagenomics -c bioconda metamdbg -y
+
     gp sync-done bundle
 
-- name: Install Nextflow
-# https://www.nextflow.io/docs/latest/getstarted.html
-  init: |
+    mamba install conda-forge::singularity
+	
     cd /workspace/
       
     wget -qO- https://get.nextflow.io | bash
@@ -23,18 +22,12 @@ tasks:
 
     sudo mv nextflow /usr/local/bin
 
-- name: Install Singularity
-  init: |
-    mamba install conda-forge::singularity
-
-- name: Install Genome Assembly Pipeline
-# https://github.com/sanger-tol/curationpretext
-  init: |
     mkdir -p /workspace/pipeline
 
     cd /workspace/pipeline
 
     git clone https://github.com/sanger-tol/genomeassembly.git
+	
 
 ports:
   - port: 5900
