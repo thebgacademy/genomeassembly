@@ -26,8 +26,9 @@ tasks:
 - name: Install Genome Assembly Pipeline
 # https://github.com/sanger-tol/curationpretext
   init: |
-    cd /workspace
-    git clone -b 0.10.0 https://github.com/sanger-tol/genomeassembly.git
+    mkdir -p /workspace/pipeline
+	cd /workspace/pipeline
+    git clone https://github.com/sanger-tol/genomeassembly.git
 
 ports:
   - port: 5900
