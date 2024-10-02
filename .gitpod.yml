@@ -1,55 +1,17 @@
 image: gitpod/workspace-full-vnc
-ports:
-  - port: 5900
-    onOpen: ignore
-  - port: 6080
-    onOpen: open-browser
-    visibility: public
 
 tasks:
-  - name: Install Mamba
-	init: |
-        cd /workspace
-        wget "https://github.com/conda-forge/miniforge/releases/latest/download/Mambaforge-$(uname)-$(uname -m).sh"
-        bash Mambaforge-$(uname)-$(uname -m).sh -b -p /workspace/mambaforge && rm Mambaforge-$(uname)-$(uname -m).sh
+- name: SETUP - MAMBA ENVIRONMENT
+  init: |
+    cd /workspace
+    wget "https://github.com/conda-forge/miniforge/releases/download/24.3.0-0/Mambaforge-24.3.0-0-Linux-x86_64.sh"
+    bash Mambaforge-24.3.0-0-Linux-x86_64.sh -b -p /workspace/mambaforge && rm Mambaforge-24.3.0-0-Linux-x86_64.sh
 
-        /workspace/mambaforge/bin/mamba init bash
-        source ${HOME}/.bashrc
-      
-        # set up conda evironment with R and needed packages
-        mamba create -n gs -c conda-forge r-base r-argparse r-minpack.lm -y
-        mamba activate gs
-        mamba install -c bioconda kmc -y
-	
-  - name: Install FastK and MERQURY.FK
-    init: |
-        cd /workspace
-        mkdir src bin && cd src # create directories for source code & binaries
-        git clone https://github.com/thegenemyers/FastK
-        cd FastK && make
-        install -c FastK Fastrm Fastmv Fastcp Fastmerge Histex Tabex Profex Logex Vennex Symmex Haplex Homex Fastcat KatGC /workspace/bin/
-    	
-		git clone https://github.com/thegenemyers/MERQURY.FK
-		cd MERQURY.FK && make
-		make INSTALL_PREFIX=/workspace/bin/ install
-  - 
-  
-  - name: Install Nextflow
-  # https://www.nextflow.io/docs/latest/getstarted.html
-    init: |
-      cd /workspace/treeval-curation/
-      
-      wget -qO- https://get.nextflow.io | bash
+    /workspace/mambaforge/bin/mamba init bash
+    source ${HOME}/.bashrc
+    mamba create -n metagenomics -c bioconda metamdbg -y
+    gp sync-done bundle
 
-      chmod +x nextflow
-
-      sudo mv nextflow /usr/local/bin
-
-  - name: Install Genome Assembly Pipeline
-  # https://github.com/sanger-tol/curationpretext
-    init: |
-      cd /workspace/treeval-curation/
-      git clone -b 0.10.0 https://github.com/sanger-tol/genomeassembly.git
 ports:
   - port: 5900
     onOpen: ignore
