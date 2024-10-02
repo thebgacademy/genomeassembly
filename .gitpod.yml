@@ -1,13 +1,10 @@
 image: gitpod/workspace-full-vnc
-
-image: gitpod/workspace-full-vnc
-# Update 7th September to reflect code base changes
 ports:
-- name: something
-  description: something
-  port: 3000
-  onOpen: open-browser
-  visibility: public
+  - port: 5900
+    onOpen: ignore
+  - port: 6080
+    onOpen: open-browser
+    visibility: public
 
 tasks:
   - name: Install Mamba
@@ -48,7 +45,7 @@ tasks:
 
       sudo mv nextflow /usr/local/bin
 
-  - name: Install Genome Assemblt Pipeline
+  - name: Install Genome Assembly Pipeline
   # https://github.com/sanger-tol/curationpretext
     init: |
       cd /workspace/treeval-curation/
