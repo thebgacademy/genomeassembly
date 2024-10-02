@@ -27,7 +27,7 @@ tasks:
     cd /workspace/pipeline
 
     git clone https://github.com/sanger-tol/genomeassembly.git
-	
+
 
 ports:
   - port: 5900
