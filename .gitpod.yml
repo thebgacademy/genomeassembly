@@ -1,39 +1,21 @@
 image: gitpod/workspace-full-vnc
+ports:
+- name: GenomeAssembly
+  port: 3000
+  onOpen: open-browser
+  visibility: public
+
 
 tasks:
-- name: SETUP ENVIRONMENT
-  init: |
-    cd /workspace
-    wget "https://github.com/conda-forge/miniforge/releases/download/24.3.0-0/Mambaforge-24.3.0-0-Linux-x86_64.sh"
-    bash Mambaforge-24.3.0-0-Linux-x86_64.sh -b -p /workspace/mambaforge && rm Mambaforge-24.3.0-0-Linux-x86_64.sh
-
-    /workspace/mambaforge/bin/mamba init bash
-    source ${HOME}/.bashrc
-
-    gp sync-done bundle
-
-    mamba install conda-forge::singularity
-
-    cd /workspace/
+  - name: SETUP - Install Nextflow
+  # https://www.nextflow.io/docs/latest/getstarted.html
+    init: |
+      cd /workspace/treeval-curation/
       
-    wget -qO- https://get.nextflow.io | bash
+      wget -qO- https://get.nextflow.io | bash
 
-    chmod +x nextflow
+      chmod +x nextflow
 
-    sudo mv nextflow /usr/local/bin
-
-    mkdir -p /workspace/pipeline
-
-    cd /workspace/pipeline
-
-    git clone https://github.com/sanger-tol/genomeassembly.git
-
-
-ports:
-  - port: 5900
-    onOpen: ignore
-  - port: 6080
-    onOpen: open-browser
-    visibility: public
+      sudo mv nextflow /usr/local/bin
 
 workspaceLocation: "/workspace"
