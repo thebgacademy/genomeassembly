@@ -42,15 +42,15 @@ tasks:
     git clone https://github.com/thegenemyers/MERQURY.FK
     cd /workspace/MERQURY.FK && make -s INSTALL_PREFIX=/workspace
     install -c ASMplot blk_plot.R.h CNplot cn_plot.R.h HAPmaker HAPplot hap_plot.R.h KatComp KatGC kgc_plot.R.h kx_plot.R.h MerquryFK PloidyPlot smu_plot.R.h /workspace/bin/
-	
-	# YAHS
-	cd /workspace
-	git clone https://github.com/c-zhou/yahs
-	cd /workspace/yahs && make -s INSTALL_PREFIX=/workspace
-	install -c agp_to_fasta yahs juicer /workspace/bin
-	
-	export PATH=$PATH:/workspace/bin
-	
+
+    # YAHS
+    cd /workspace
+    git clone https://github.com/c-zhou/yahs
+    cd /workspace/yahs && make -s INSTALL_PREFIX=/workspace
+    install -c agp_to_fasta yahs juicer /workspace/bin
+
+    export PATH=$PATH:/workspace/bin
+
     gp sync-done bundle
 
 workspaceLocation: "/workspace"
