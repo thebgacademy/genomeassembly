@@ -23,7 +23,7 @@ tasks:
     conda config --set channel_priority strict
 
     mamba install -y minimap2 bwa-mem2 samtools bedtools gfastats pretext-suite
-	pip install numpy pandas
+    pip install numpy pandas
 
     # SMUDGEPLOT
     cd /workspace
