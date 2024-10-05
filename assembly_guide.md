@@ -31,7 +31,8 @@ We'll start by looking counting kmers with [**FastK**](https://github.com/thegen
 >**FastK** counts the number of k‑mers in a corpus of DNA sequences over the alphabet 
 >{a,c,g,t} for a specified k‑mer size, 40 by default.
 
-``mkdir -p $outdir/genomescope/tmp
+```bash
+mkdir -p $outdir/genomescope/tmp
 cd $outdir/genomescope
 FastK \
 	-k31 \ 								# kmer size
@@ -40,12 +41,13 @@ FastK \
 	-Ptmp \ 							# Directory for temporary files
 	-N$sample.k31 \ 					# Output prefix
 	$reads
-``
+```
 
 We'll use **Histex** (part of the FastK suite) to convert the file `gfLaeSulp1.hist` 
 produced by FastK into a text file format usable by [**GenomeScope**](https://github.com/schatzlab/genomescope).
 
-``Histex \
+```bashg
+Histex \
 	-h1:32767 \ 						# Set range of counts for histogram
 	-G \ 								# Output an ASCII format histogram especially for GeneScope.FK
 	$specimen.k31 \ 					# Prefix of input hist file
@@ -55,7 +57,7 @@ produced by FastK into a text file format usable by [**GenomeScope**](https://gi
 			-o . \ 						# Save output in current directory
 			-n $sample.k31 \ 			# Output prefix
 			-k31 # kmer size
-``
+```
 
 Take a look at the outputs of GenomeScope.
 
