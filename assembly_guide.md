@@ -433,7 +433,7 @@ samtools view \							# **Decompress file**
 can link it to your working folder to avoid waiting for this to run.**
 
 ```bash
-ln -fs /workspace/data/hic_alignments/$sample.bam $outdir/scaffolding/
+ln -fs /workspace/data/hic_alignments/$sample.bam* $outdir/scaffolding/
 ```
 
 Next, we want to mark any potential duplicate reads so they don't bias downstream analyses.
