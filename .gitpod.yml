@@ -55,5 +55,12 @@ tasks:
 
     # Get Data
     mkdir -p /workspace/data
-    
+    cd /workspace/data
+    wget http://asg.cog.sanger.ac.uk/s2g/gfLaeSulp1.pacbio.fa.gz
+    wget http://asg.cog.sanger.ac.uk/s2g/assembly_files.tar.gz
+    tar -zxvf /workspace/data/assembly_files.tar.gz
+    wget http://asg.cog.sanger.ac.uk/s2g/gfLaeSulp1.bam
+    wget http://asg.cog.sanger.ac.uk/s2g/gfLaeSulp1.bam.csi
+
+
 workspaceLocation: "/workspace"

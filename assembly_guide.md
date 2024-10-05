@@ -47,12 +47,11 @@ cd $outdir
 sample=gfLaeSulp1
 ```
 
-We'll now download our pre-trimmed PacBio read data and create a variable shortcut.
+Let's also symlink our pre-trimmed PacBio read data to our working directory and create a variable shortcut.
 
 ```bash
-wget http://asg.cog.sanger.ac.uk/s2g/gfLaeSulp1.pacbio.fa.gz
-
 reads=/workspace/assembly/$sample.pacbio.fa.gz
+ln -fs /workspace/data/$sample.pacbio.fa.gz $outdir/
 ```
 
 #### 3. Long Read QC
@@ -122,6 +121,8 @@ PloidyPlot \
 	2>k31_ploidy.log
 ```
 
+Take a look at the smudgeplot you just created.
+
 #### 4. HiFiasm Assembly and QC
 Now that we have taken a look at our reads and noted that everything looks okay we can 
 proceed with assembly. While there are many different assemblying algorithms, the Sanger 
@@ -147,7 +148,7 @@ The HiFiasm data provided in the directory `/workspace/data/hifiasm_output`.
 Let's link those files to our working directory.
 
 ```bash
-ln -fs /workspace/data/hifiasm_output/* $outdir/
+ln -fs /workspace/data/assembly_files/* $outdir/
 ```
 
 Take a look at the contents of your directory now using the `ls` command.
