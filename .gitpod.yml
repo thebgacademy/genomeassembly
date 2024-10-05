@@ -22,7 +22,7 @@ tasks:
     conda config --add channels conda-forge
     conda config --set channel_priority strict
 
-    mamba install -y minimap2 bwa-mem2 samtools bedtools gfastats pretext-suite
+    mamba install -y minimap2 bwa-mem2 samtools gnuplot bedtools gfastats pretext-suite
     pip install numpy pandas
 
     # SMUDGEPLOT
@@ -53,4 +53,7 @@ tasks:
 
     gp sync-done bundle
 
+    # Get Data
+    mkdir -p /workspace/data
+    
 workspaceLocation: "/workspace"
