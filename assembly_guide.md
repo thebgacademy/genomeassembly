@@ -20,6 +20,40 @@ Tree of Life Program ([PRJEB47319](https://www.ncbi.nlm.nih.gov/bioproject/76042
 
 
 #### 2. Initializing the GitPod environment
+Let's start by opening up our GitPod environment. On the GitHub page, select **Open in GitPod**.
+![gitpod](gitpod_img.svg)
+
+
+
+Once your environment loads, you should see a message in the bottom right hand corner fo your workspace 
+associated with Port 6080. Click on **'Open Browser'**.
+
+![gitpod_gui](open_gui.png)
+
+This will open a Graphical User Interface (GUI) that mirrors your command line environment. 
+While we will be running most things via the command line the GUI can be useful for looking at graphs we 
+create as part of the pipeline.
+
+**Note: If this message disappears you can access Port 6080 in the PORTS tab on the main GitPod page.**
+
+
+Let's create a working directory and set a variable for it. We'll also store our sample name in a variable
+
+```bash
+outdir=/workspace/assembly
+mkdir -p $outdir
+cd $outdir
+
+sample=gfLaeSulp1
+```
+
+We'll now download our pre-trimmed PacBio read data and create a variable shortcut.
+
+```bash
+wget http://asg.cog.sanger.ac.uk/s2g/gfLaeSulp1.pacbio.fa.gz
+
+reads=/workspace/assembly/$sample.pacbio.fa.gz
+```
 
 #### 3. Long Read QC
 In this section we will begin by taking a look at our trimmed long read data 
@@ -39,7 +73,7 @@ FastK \
 	-T8 \ 								# Threads
 	-t1 \ 								# Produce table of sorted k-mers & counts
 	-Ptmp \ 							# Directory for temporary files
-	-N$sample.k31 \ 					# Output prefix
+	-N$sample.k31 \							# Output prefix
 	$reads
 ```
 
@@ -48,25 +82,25 @@ produced by FastK into a text file format usable by [**GenomeScope**](https://gi
 
 ```bash
 Histex \
-	-h1:32767 \ 						# Set range of counts for histogram
+	-h1:32767 \ 							# Set range of counts for histogram
 	-G \ 								# Output an ASCII format histogram especially for GeneScope.FK
-	$specimen.k31 \ 					# Prefix of input hist file
-	| tee k31.hist.txt \ 				# Save output of previous command while passing it on to the next
+	$specimen.k31 \ 						# Prefix of input hist file
+	| tee k31.hist.txt \ 						# Save output of previous command while passing it on to the next
 	| docker run dovetailg/genomescope \
 		genomescope.R \
 			-o . \ 						# Save output in current directory
-			-n $sample.k31 \ 			# Output prefix
+			-n $sample.k31 \ 				# Output prefix
 			-k31 # kmer size
 ```
 
-Take a look at the outputs of GenomeScope.
+Take a look at the outputs of GenomeScope in the GUI.
 
 Now produce a plot comparing GC content and coverage using **KatGC** 
 (part of the [MERQURY.FK suite](https://github.com/thegenemyers/MERQURY.FK))
 
 ```bash
 KatGC \
-	-T8 \								# Threads
+	-T8 \							# Threads
 	$sample.k31 \						# Input prefix
 	$sample.k31_gc						# Output prefix
 ```
@@ -80,10 +114,10 @@ compares ratios of kmer pairs.
 
 ```bash
 PloidyPlot \
-	-T8 \								# Threads
-	-Ptmp \								# Directory for temporary files
-	-kv \								# Keep het-mer table for re-use / Verbose mode
-	-o$sample.k31_ploidy \				# Output prefix
+	-T8 \							# Threads
+	-Ptmp \							# Directory for temporary files
+	-kv \							# Keep het-mer table for re-use / Verbose mode
+	-o$sample.k31_ploidy \					# Output prefix
 	$sample.k31 \
 	2>k31_ploidy.log
 ```
@@ -99,9 +133,9 @@ on both we will **_skip running HiFiasm_** but the command is given below for re
 ```bash
 cd /$outdir
 hifiasm \
-	-t 8 \								# Threads
+	-t 8 \							# Threads
 	-o $sample \						# Output prefix					
-	--primary \							# Output primary and alternate assemblies
+	--primary \						# Output primary and alternate assemblies
 	$reads
 ```
 
@@ -167,9 +201,9 @@ mkdir -p $outdir/$sample.p_ctg.ccs.merquryk
 cd $outdir/$sample.p_ctg.ccs.merquryk
 MerquryFK \
 	-T6 \								# Threads
-	$outdir/genomescope/$sample.k31 \	# Prefix for kmer counts
-	$outdir/$sample.p_ctg.fa.gz \		# Primary assembly
-	$outdir/$sample.a_ctg.fa.gz \		# Alternate assembly
+	$outdir/genomescope/$sample.k31 \			# Prefix for kmer counts
+	$outdir/$sample.p_ctg.fa.gz \				# Primary assembly
+	$outdir/$sample.a_ctg.fa.gz \				# Alternate assembly
 	$sample.ccs							# Output prefix
 ```
 
@@ -180,13 +214,13 @@ Now lets get run BUSCO to get a sense of overall completeness and haplotypic dup
 ```bash
 docker run staphb/busco busco \
 	busco \
-		--metaeuk \											# We'll use metaEuk for gene discovery as it is much less memory intensive compared to miniProt							
-		--tar \												# Compress subdirectories to save space
-		--in $outdir/$sample.p_ctg.fa \						# Input assembly
-		--cpu 8 \											# Threads
-		--out $specimen.p_ctg.basidiomycota_odb10.busco \	# Output directory
-		--mode genome \										# Type of assembly
-		--lineage_dataset basidiomycota_odb10				# Lineage database to query
+		--metaeuk \								# We'll use metaEuk for gene discovery as it is much less memory intensive compared to miniProt							
+		--tar \									# Compress subdirectories to save space
+		--in $outdir/$sample.p_ctg.fa \					# Input assembly
+		--cpu 8 \								# Threads
+		--out $specimen.p_ctg.basidiomycota_odb10.busco \			# Output directory
+		--mode genome \									# Type of assembly
+		--lineage_dataset basidiomycota_odb10					# Lineage database to query
 ```
 
 #### 5. Purging Duplicates
@@ -365,32 +399,32 @@ data. These steps are...
 
 
 ```bash
-samtools view \									# **Decompress file**
+samtools view \								# **Decompress file**
 	-u $hic_cram \
-	| samtools fastq \								# **Convert to fastq**
-		-F0xB00 \									# Filter to remove supplementary alignments, reads not passing filters, and secondary alignments
-		-nt \										# Don't append read pair info to read names / Copy header lines
+	| samtools fastq \					# **Convert to fastq**
+		-F0xB00 \				# Filter to remove supplementary alignments, reads not passing filters, and secondary alignments
+		-nt \					# Don't append read pair info to read names / Copy header lines
 		- \
-	| bwa-mem2 mem \								# **Align reads to assembly**
-		-t8 \										# Threads
-		-5 \										# For split alignment, take the alignment with the smallest coordinate as primary
-		-S \										# Skip mate rescue
-		-P \										# Skip pairing
-		-C \										# Append FASTA/FASTQ comment to SAM output
-		-p \										# Smart pairing
-		$rg_lines \									# Insert retained header lines
+	| bwa-mem2 mem \					# **Align reads to assembly**
+		-t8 \					# Threads
+		-5 \					# For split alignment, take the alignment with the smallest coordinate as primary
+		-S \					# Skip mate rescue
+		-P \					# Skip pairing
+		-C \					# Append FASTA/FASTQ comment to SAM output
+		-p \					# Smart pairing
+		$rg_lines \				# Insert retained header lines
 		$outdir/purging/$sample.purged.fa - \
-	| samtools fixmate \							# **Fix mate informatio**
-		-m \										# Add mate score tag
-		-p \										# Disable FR proper pair check
-		-u \										# Uncompressed output
+	| samtools fixmate \						# **Fix mate informatio**
+		-m \					# Add mate score tag
+		-p \					# Disable FR proper pair check
+		-u \					# Uncompressed output
 		- - \
-	| samtools sort \								# **Sort alignment**
+	| samtools sort \							# **Sort alignment**
 		--write-index \
-		-l1 \										# Set compression level
-		-@8 \										# Threads
-		-T $outdir/scaffolding/$sample.sort.tmp \	# Temporary output
-		-o $outdir/scaffolding/$sample.bam \		# Output file
+		-l1 \					# Set compression level
+		-@8 \					# Threads
+		-T $outdir/scaffolding/$sample.sort.tmp \		# Temporary output
+		-o $outdir/scaffolding/$sample.bam \			# Output file
 		- 	
 ```
 
@@ -409,8 +443,8 @@ issues that occur during sequencing (optical duplicates).
 ```bash
 samtools markdup \
 	--write-index \
-	-c \											# Clear previous duplicate settings and tags.
-	-@8 \											# Threads
+	-c \									# Clear previous duplicate settings and tags.
+	-@8 \									# Threads
 	-T $outfile.mkdup.tmp \							# Temporary output
 	-f $outfile.metrics.txt \						# Output stats
 	$outdir/scaffolding/$sample.bam \
@@ -421,8 +455,8 @@ We now want to QC our alignments to make sure everything is looking okay
 
 ```bash
 samtools stats \
-	-@8 \											# Threads
-	-F0xB00 \										# Filter to remove supplementary alignments, reads not passing filters, and secondary alignments
+	-@8 \									# Threads
+	-F0xB00 \								# Filter to remove supplementary alignments, reads not passing filters, and secondary alignments
 	$outdir/scaffolding/$sample.mkdup.bam \
 	> $outdir/scaffolding/$sample.mkdup.bam.stats
 plot_bamstats \
