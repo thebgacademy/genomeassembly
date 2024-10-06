@@ -204,8 +204,8 @@ cd $outdir/$sample.p_ctg.ccs.merquryk
 MerquryFK \
 	-T6 \
 	$outdir/genomescope/$sample.k31 \
-	$outdir/$sample.p_ctg.fa.gz \
-	$outdir/$sample.a_ctg.fa.gz \
+	$outdir/$sample.p_ctg.fa \
+	$outdir/$sample.a_ctg.fa \
 	$sample.ccs
 ```
 
@@ -244,7 +244,7 @@ mkdir -p $outdir/purging/coverage
 minimap2 \
 	-t 8 \
 	-x map-pb \
-	$outdir/$sample.p_ctg.fa.gz \
+	$outdir/$sample.p_ctg.fa \
 	$reads \
 	| gzip -c - \
 	> $outdir/purging/coverage/$sample.paf.gz \
@@ -275,14 +275,14 @@ aligning the assembly to itself
 ```bash
 docker run hamiltonjp/purge_dups:1.2.5 \
 	split_fa \
-		$outdir/$sample.p_ctg.fa.gz \
-		> $outdir/$sample.p_ctg.fa.gz.split
+		$outdir/$sample.p_ctg.fa \
+		> $outdir/$sample.p_ctg.fa.split
 minimap2 \
 	-t8 \
 	-xasm5 \
 	-DP \
-	$outdir/$specimen.p_ctg.fa.gz.split \
-	$outdir/$specimen.p_ctg.fa.gz.split \
+	$outdir/$specimen.p_ctg.fa.split \
+	$outdir/$specimen.p_ctg.fa.split \
 	> $outdir/purging/coverage/$specimen.split.self.paf
 ```
 
@@ -306,7 +306,7 @@ And finally separate out the sequences.
 docker run hamiltonjp/purge_dups:1.2.5 \
 	get_seqs -e \
 		$outdir/purging/purge_dups/dups.bed.gz \
-		$outdir/$specimen.p_ctg.fa.gz \
+		$outdir/$specimen.p_ctg.fa \
 		-p $outdir/purging
 ```
 

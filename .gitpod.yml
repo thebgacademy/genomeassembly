@@ -22,8 +22,16 @@ tasks:
     conda config --add channels conda-forge
     conda config --set channel_priority strict
 
-    mamba install -y minimap2 bwa-mem2 samtools gnuplot bedtools gfastats pretext-suite r-base
+    mamba install -y minimap2 bwa-mem2 samtools gnuplot bedtools gfastats pretext-suite 
     pip install numpy pandas
+
+    # mamba install r-base
+    # mkdir ~/R_libs
+    # echo "R_LIBS=~/R_libs/" >> ~/.Renviron
+    # Rscript -e 'install.packages("argparse", repos="https://cloud.r-project.org")'
+    # Rscript -e 'install.packages("minpack.lm", repos="https://cloud.r-project.org")'
+    # Rscript -e 'install.packages("ggplot", repos="https://cloud.r-project.org")'
+    # Rscript -e 'install.packages("viridis", repos="https://cloud.r-project.org")'
 
     # SMUDGEPLOT
     cd /workspace
@@ -37,16 +45,12 @@ tasks:
     cd /workspace/FastK && make -s INSTALL_PREFIX=/workspace
     install -c FastK Fastrm Fastmv Fastcp Fastmerge Histex Tabex Profex Logex Vennex Symmex Haplex Homex Fastcat /workspace/bin/
 
-    # GENESCOPE.FK
-    cd /workspace
-    git clone https://github.com/thegenemyers/GENESCOPE.FK
-    cd /workspace/GENESCOPE.FK
-    mkdir ~/R_libs
-    echo "R_LIBS=~/R_libs/" >> ~/.Renviron
-    Rscript -e 'install.packages("argparse", repos="https://cloud.r-project.org")'
-    Rscript -e 'install.packages("minpack.lm", repos="https://cloud.r-project.org")'
-    Rscript install.R
-    install -c GeneScopeFK.R /workspace/bin/
+    # # GENESCOPE.FK
+    # cd /workspace
+    # git clone https://github.com/thegenemyers/GENESCOPE.FK
+    # cd /workspace/GENESCOPE.FK
+    # Rscript install.R
+    # install -c GeneScopeFK.R /workspace/bin/
 
     # MERQURY.FK
     cd /workspace
