@@ -77,19 +77,20 @@ FastK \
 ```
 
 We'll use **Histex** (part of the FastK suite) to convert the file `gfLaeSulp1.hist` 
-produced by FastK into a text file format usable by [**GenomeScope**](https://github.com/schatzlab/genomescope).
+produced by FastK into a text file format usable by 
+[**GeneScope.FK**](https://github.com/thegenemyers/GENESCOPE.FK), an adaptation of 
+[**GenomeScope**](https://github.com/schatzlab/genomescope).
 
 ```bash
 Histex \
 	-h1:32767 \
 	-G \
-	$specimen.k31 \
+	$sample.k31 \
 	| tee k31.hist.txt \
-	| docker run dovetailg/genomescope \
-		genomescope.R \
-			-o . \
-			-n $sample.k31 \
-			-k31 # kmer size
+	| GeneScopeFK.R \
+		-o . \
+		-n $sample.k31 \
+		-k31
 ```
 
 Take a look at the outputs of GenomeScope in the GUI.
