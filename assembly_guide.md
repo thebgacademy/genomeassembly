@@ -214,13 +214,14 @@ Take a look at the outputs.
 Now lets get run BUSCO to get a sense of overall completeness and haplotypic duplication.
 
 ```bash
-docker run staphb/busco busco \
+cd $outdir
+docker run ezlabgva/busco:v5.7.1_cv1 \
 	busco \
-		--metaeuk \					
+		--metaeuk \
 		--tar \
 		--in $outdir/$sample.p_ctg.fa \
 		--cpu 8 \
-		--out $specimen.p_ctg.basidiomycota_odb10.busco \
+		--out $sample.p_ctg.basidiomycota_odb10.busco \
 		--mode genome \
 		--lineage_dataset basidiomycota_odb10
 ```
@@ -253,18 +254,15 @@ minimap2 \
 We use the alignment as input for purge_dups to automatically calculate purging cutoffs.
 
 ```bash
-docker run hamiltonjp/purge_dups:1.2.5 \
-	pbcstat \
-		$outdir/purging/coverage/$sample.paf.gz
-docker run hamiltonjp/purge_dups:1.2.5 \
-	calcuts \
-		$outdir/purging/coverage/PB.stat \
-		> $outdir/purging/coverage/cutoffs
-docker run hamiltonjp/purge_dups:1.2.5 \
-	hist_plot.py -c \
-		$outdir/purging/coverage/cutoffs \
-		$outdir/purging/coverage/PB.stat \
-		$outdir/purging/coverage/cutoffs.png
+pbcstat \
+	$outdir/purging/coverage/$sample.paf.gz
+calcuts \
+	$outdir/purging/coverage/PB.stat \
+	> $outdir/purging/coverage/cutoffs
+hist_plot.py -c \
+	$outdir/purging/coverage/cutoffs \
+	$outdir/purging/coverage/PB.stat \
+	$outdir/purging/coverage/cutoffs.png
 ```
 
 
@@ -273,41 +271,37 @@ For the actual purging step, we need to identify potential hap dups. We do this 
 aligning the assembly to itself
 
 ```bash
-docker run hamiltonjp/purge_dups:1.2.5 \
-	split_fa \
-		$outdir/$sample.p_ctg.fa \
-		> $outdir/$sample.p_ctg.fa.split
+split_fa \
+	$outdir/$sample.p_ctg.fa \
+	> $outdir/$sample.p_ctg.fa.split	
 minimap2 \
 	-t8 \
 	-xasm5 \
 	-DP \
-	$outdir/$specimen.p_ctg.fa.split \
-	$outdir/$specimen.p_ctg.fa.split \
-	> $outdir/purging/coverage/$specimen.split.self.paf
+	$outdir/$sample.p_ctg.fa.split \
+	$outdir/$sample.p_ctg.fa.split \
+	> $outdir/purging/coverage/$sample.split.self.paf
 ```
 
 We then use purge_dups to identify potentially duplicated regions.
 
 ```bash
 mkdir $outdir/purging/purge_dups
-docker run hamiltonjp/purge_dups:1.2.5 \
-	purge_dups \
-		-2 \
-		-T $outdir/purging/coverage/cutoffs \
-		-c $outdir/purging/coverage/PB.base.cov \
-		$outdir/purging/coverage/$sample.split.self.paf \
-		| gzip -c \
-		> $outdir/purging/purge_dups/dups.bed.gz	
+purge_dups \
+	-2 \
+	-T $outdir/purging/coverage/cutoffs \
+	-c $outdir/purging/coverage/PB.base.cov \
+	$outdir/purging/coverage/$sample.split.self.paf \
+	> $outdir/purging/purge_dups/dups.bed	
 ```
 
 And finally separate out the sequences.
 
 ```bash
-docker run hamiltonjp/purge_dups:1.2.5 \
-	get_seqs -e \
-		$outdir/purging/purge_dups/dups.bed.gz \
-		$outdir/$specimen.p_ctg.fa \
-		-p $outdir/purging
+get_seqs -e \
+	$outdir/purging/purge_dups/dups.bed \
+	$outdir/$sample.p_ctg.fa \
+	-p $outdir/purging/$sample
 ```
 
 As with the HiFiasm assembly step, the output is a primary purged assembly and sequences
@@ -328,7 +322,7 @@ that our assembly looks better than before.
 cd $outdir/purging
 gfastats \
 	$outdir/purging/$sample.purged.fa \
-	> $outdir/purging$sample.purged.fa.stats
+	> $outdir/purging/$sample.purged.fa.stats
 gfastats \
 	$outdir/purging/$sample.hap.all.fa \
 	> $outdir/purging/$sample.hap.all.fa.stats
@@ -373,6 +367,13 @@ samtools faidx \
 	$outdir/purging/$sample.purged.fa
 bwa-mem2 index \
 	$outdir/purging/$sample.purged.fa
+```
+
+Let's download our HiC data.
+```bash
+cd $outdir
+wget http://asg.cog.sanger.ac.uk/s2g/gfLaeSulp1.hic.cram
+hic_cram=$outdir/$sample.hic.cram
 ```
 
 Next, we'll preserve some of the read group info in our raw HiC cram file.
@@ -431,10 +432,12 @@ samtools view \
 ```
 
 **Note: To save time, the output for this command has already been generated. You
-can link it to your working folder to avoid waiting for this to run.**
+can download it to your working folder to avoid waiting for this to run.**
 
 ```bash
-ln -fs /workspace/data/hic_alignments/$sample.bam* $outdir/scaffolding/
+cd $outdir/scaffolding
+wget http://asg.cog.sanger.ac.uk/s2g/$sample.bam
+wget http://asg.cog.sanger.ac.uk/s2g/$sample.bam.csi
 ```
 
 Next, we want to mark any potential duplicate reads so they don't bias downstream analyses.
@@ -484,6 +487,9 @@ samtools view \
 		-S50G \
 		> $outdir/scaffolding/$sample.mkdup.bed
 ```
+
+
+
 
 We are ready to scaffold!
 
