@@ -107,8 +107,5 @@ tasks:
 
     chmod +x /workspace/bin/*
 
-- name: MAIN TERMINAL
-  init: |
-    echo "Hi everyone
-
 workspaceLocation: "/workspace"
+
