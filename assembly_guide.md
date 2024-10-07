@@ -273,6 +273,7 @@ signficant amounts of retained haplotypic duplication that we would like to remo
 do this we will use a program called [**purge_dups**](https://github.com/dfguan/purge_dups).
 
 **Determine coverage cutoffs**
+
 purge_dups relies on coverage cutoffs to determine which detected duplicates may, in fact,
 be true haplotypic duplications (hap dups) we want to remove. Incorrect cutoffs can result 
 in _underpurging_ (not removing true hap dups) or _overpurging_ (removing genomic 
@@ -308,6 +309,7 @@ hist_plot.py -c \
 
 
 **Purging**
+
 For the actual purging step, we need to identify potential hap dups. We do this by
 aligning the assembly to itself
 
@@ -411,6 +413,7 @@ are from regions of a chromosome that are closer together).
 
 
 ** HiC Alignment **
+
 To scaffold with HiC reads, we first need to align them to our assembly. We will do this
 using [**bwa-mem2**](https://github.com/bwa-mem2/bwa-mem2).
 
@@ -551,6 +554,7 @@ samtools view \
 We are ready to scaffold!
 
 **Scaffolding**
+
 As with assembly and alignment, there are many tools available to scaffold contigs.
 At Tree of Life, we've found that [**YaHS**](https://github.com/c-zhou/yahs) typically 
 provides the best outcomes.
