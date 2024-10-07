@@ -77,7 +77,6 @@ tasks:
 
     gp sync-done bundle
 
-
 - name: SETUP ENVIRONMENT - PRETEXTVIEW
   init: |
     # BANDAGE
@@ -104,8 +103,6 @@ tasks:
     # wget http://asg.cog.sanger.ac.uk/s2g/gfLaeSulp1.hic.cram
     # wget http://asg.cog.sanger.ac.uk/s2g/gfLaeSulp1.bam
     # wget http://asg.cog.sanger.ac.uk/s2g/gfLaeSulp1.bam.csi
-
-    chmod +x /workspace/bin/*
 
 - name: MAIN TERMINAL
   init: gp sync-await bundle
