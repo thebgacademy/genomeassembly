@@ -110,6 +110,7 @@ tasks:
 - name: MAIN TERMINAL
   init: gp sync-await bundle
   command: |
-    echo "Hi everyone"
+    source ${HOME}/.bashrc
+    echo "WELCOME TO THE GENOMEASSEMBLY GitPoD AT S2G 2024!"
 
 workspaceLocation: "/workspace"
