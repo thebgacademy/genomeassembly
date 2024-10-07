@@ -20,9 +20,18 @@ Tree of Life Program ([PRJEB47319](https://www.ncbi.nlm.nih.gov/bioproject/76042
 
 
 #### 2. Initializing the GitPod environment
-Let's start by opening up our GitPod environment. On the GitHub page, select **Open in GitPod**.
-![gitpod](gitpod_img.svg)
+First, we'll set our GitPod preferences so that our GitPod environment doesnt time out every 30 minutes.
 
+Go to https://gitpod.io/user/preferences. Set the 'Timeouts' field to the max time (24h).
+
+![timeout](timeout.png)
+
+
+Next, lets open up our GitPod environment. Go to the 
+[BGA Genome Assembly GithHub site](https://github.com/thebgacademy/genomeassembly).
+
+On the GitHub page, select **Open in GitPod**.
+![gitpod](gitpod_img.svg)
 
 
 Once your environment loads, you should see a message in the bottom right hand corner fo your workspace 
@@ -333,7 +342,7 @@ MerquryFK \
 	$outdir/purging/$sample.purged.fa \
 	$outdir/purging/$sample.hap.all.fa \
 	$sample.ccs
-docker run staphb/busco busco \
+docker run ezlabgva/busco:v5.7.1_cv1 \
 	busco \
 		--metaeuk \
 		--force \
@@ -489,6 +498,10 @@ samtools view \
 ```
 
 
+```bash
+cd $outdir/scaffolding
+wget http://asg.cog.sanger.ac.uk/s2g/$sample.mkdup.bed.gz
+```
 
 
 We are ready to scaffold!
@@ -503,7 +516,7 @@ mkdir -p $outdir/scaffolding/yahs/out.break.yahs
 yahs \
 	-o $outdir/scaffolding/yahs/out.break.yahs/out \
 	$outdir/purging/$sample.purged.fa \
-	$outdir/scaffolding/$sample.mkdup.bed
+	$outdir/scaffolding/$sample.mkdup.bed.gz
 ```
 
 This will produce our scaffolded assembly along with an 
@@ -529,7 +542,7 @@ MerquryFK \
 ```
 
 ```bash
-docker run staphb/busco busco \
+docker run ezlabgva/busco:v5.7.1_cv1 \
 	busco \
 		--metaeuk \
 		--force \
