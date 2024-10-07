@@ -59,12 +59,7 @@ tasks:
     git clone https://github.com/thegenemyers/MERQURY.FK
     cd /workspace/MERQURY.FK && make -s INSTALL_PREFIX=/workspace
     install -c ASMplot blk_plot.R.h CNplot cn_plot.R.h HAPmaker HAPplot hap_plot.R.h KatComp KatGC kgc_plot.R.h kx_plot.R.h MerquryFK PloidyPlot smu_plot.R.h /workspace/bin/
-
-    # BANDAGE
-    cd /workspace
-    wget https://github.com/rrwick/Bandage/releases/download/v0.8.1/Bandage_Ubuntu_dynamic_v0_8_1.zip
-    unzip Bandage_Ubuntu_dynamic_v0_8_1.zip
-
+  
     #PURGE_DUPS
     cd /workspace
     git clone https://github.com/dfguan/purge_dups
@@ -76,17 +71,30 @@ tasks:
     cd /workspace/yahs && make -s INSTALL_PREFIX=/workspace
     install -c agp_to_fasta yahs juicer /workspace/bin
 
-    # PRETEXTVIEW
-    cd /workspace
-    wget https://github.com/sanger-tol/PretextView/releases/download/0.2.5/PretextView_Linux-x86-64.zip
-    unzip PretextView_Linux-x86-64.zip
-
+    chmod +x /workspace/bin/*
     echo "export PATH=$PATH:/workspace/bin" >> ~/.bashrc
     export PATH=$PATH:/workspace/bin
 
     gp sync-done bundle
 
-    # Get Data
+
+- name: SETUP ENVIRONMENT - PRETEXTVIEW
+  init: |
+    # BANDAGE
+    cd /workspace
+    wget https://github.com/rrwick/Bandage/releases/download/v0.8.1/Bandage_Ubuntu_dynamic_v0_8_1.zip
+    unzip Bandage_Ubuntu_dynamic_v0_8_1.zip
+
+
+- name: SETUP ENVIRONMENT - PRETEXTVIEW
+  init: |
+    cd /workspace
+    wget https://github.com/sanger-tol/PretextView/releases/download/0.2.5/PretextView_Linux-x86-64.zip
+    unzip PretextView_Linux-x86-64.zip
+
+
+- name: SETUP ENVIRONMENT - DL DATA
+  init: |
     mkdir -p /workspace/data
     cd /workspace/data
     wget http://asg.cog.sanger.ac.uk/s2g/gfLaeSulp1.pacbio.fa.gz
@@ -98,5 +106,9 @@ tasks:
     # wget http://asg.cog.sanger.ac.uk/s2g/gfLaeSulp1.bam.csi
 
     chmod +x /workspace/bin/*
+
+- name: MAIN TERMINAL
+  init: |
+    echo "Hi everyone
 
 workspaceLocation: "/workspace"
