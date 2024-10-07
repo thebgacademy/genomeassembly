@@ -1,37 +1,102 @@
 image: gitpod/workspace-full-vnc
-
-image: gitpod/workspace-full-vnc
-# Update 7th September to reflect code base changes
 ports:
-- name: something
-  description: something
+- name: GenomeAssembly
   port: 3000
   onOpen: open-browser
   visibility: public
 
 tasks:
-  - name: Install Nextflow
-  # https://www.nextflow.io/docs/latest/getstarted.html
-    init: |
-      cd /workspace/treeval-curation/
-      
-      wget -qO- https://get.nextflow.io | bash
+- name: SETUP ENVIRONMENT
+  init: |
+    mkdir -p /workspace/bin
+    sudo apt install -y fuse
+    cd /workspace
+    # MAMBA
+    wget "https://github.com/conda-forge/miniforge/releases/download/24.3.0-0/Mambaforge-24.3.0-0-Linux-x86_64.sh"
+    bash Mambaforge-24.3.0-0-Linux-x86_64.sh -b -p /workspace/mambaforge && rm Mambaforge-24.3.0-0-Linux-x86_64.sh
 
-      chmod +x nextflow
+    /workspace/mambaforge/bin/mamba init bash
+    source ${HOME}/.bashrc
 
-      sudo mv nextflow /usr/local/bin
+    conda config --add channels defaults
+    conda config --add channels bioconda
+    conda config --add channels conda-forge
+    conda config --set channel_priority strict
 
-  - name: Install Genome Note Pipeline
-  # https://github.com/sanger-tol/curationpretext
-    init: |
-      cd /workspace/treeval-curation/
+    mamba install -y minimap2 bwa-mem2 samtools gnuplot bedtools gfastats pretext-suite busco purge_dups
+    pip install numpy pandas matplotlib 
 
-      git clone -b 0.10.0 https://github.com/sanger-tol/genomeassembly.git
-ports:
-  - port: 5900
-    onOpen: ignore
-  - port: 6080
-    onOpen: open-browser
-    visibility: public
+    cd /workspace/bin
+    mamba install r-base
+    mkdir ~/R_libs
+    echo "R_LIBS=~/R_libs/" >> ~/.Renviron
+    Rscript -e 'install.packages("argparse", repos="https://cloud.r-project.org")'
+    Rscript -e 'install.packages("minpack.lm", repos="https://cloud.r-project.org")'
+    Rscript -e 'install.packages("ggplot", repos="https://cloud.r-project.org")'
+    Rscript -e 'install.packages("viridis", repos="https://cloud.r-project.org")'
+
+    # SMUDGEPLOT
+    cd /workspace
+    git clone -b sploidyplot https://github.com/KamilSJaron/smudgeplot
+    cd /workspace/smudgeplot
+    make -s INSTALL_PREFIX=/workspace
+
+    # FASTK
+    cd /workspace
+    git clone https://github.com/thegenemyers/FastK
+    cd /workspace/FastK && make -s INSTALL_PREFIX=/workspace
+    install -c FastK Fastrm Fastmv Fastcp Fastmerge Histex Tabex Profex Logex Vennex Symmex Haplex Homex Fastcat /workspace/bin/
+
+    # # GENESCOPE.FK
+    cd /workspace
+    git clone https://github.com/thegenemyers/GENESCOPE.FK
+    cd /workspace/GENESCOPE.FK
+    Rscript install.R
+    install -c GeneScopeFK.R /workspace/bin/
+
+    # MERQURY.FK
+    cd /workspace
+    git clone https://github.com/thegenemyers/MERQURY.FK
+    cd /workspace/MERQURY.FK && make -s INSTALL_PREFIX=/workspace
+    install -c ASMplot blk_plot.R.h CNplot cn_plot.R.h HAPmaker HAPplot hap_plot.R.h KatComp KatGC kgc_plot.R.h kx_plot.R.h MerquryFK PloidyPlot smu_plot.R.h /workspace/bin/
+
+    # BANDAGE
+    cd /workspace
+    wget https://github.com/rrwick/Bandage/releases/download/v0.8.1/Bandage_Ubuntu_dynamic_v0_8_1.zip
+    unzip Bandage_Ubuntu_dynamic_v0_8_1.zip
+
+    #PURGE_DUPS
+    cd /workspace
+    git clone https://github.com/dfguan/purge_dups
+    cp /workspace/purge_dups/scripts/hist_plot.py /workspace/bin
+
+    # YAHS
+    cd /workspace
+    git clone https://github.com/c-zhou/yahs
+    cd /workspace/yahs && make -s INSTALL_PREFIX=/workspace
+    install -c agp_to_fasta yahs juicer /workspace/bin
+
+    # PRETEXTVIEW
+    cd /workspace
+    wget https://github.com/sanger-tol/PretextView/releases/download/0.2.5/PretextView_Linux-x86-64.zip
+    unzip PretextView_Linux-x86-64.zip
+
+    echo "export PATH=$PATH:/workspace/bin" >> ~/.bashrc
+    export PATH=$PATH:/workspace/bin
+
+    gp sync-done bundle
+
+    # Get Data
+    mkdir -p /workspace/data
+    cd /workspace/data
+    wget http://asg.cog.sanger.ac.uk/s2g/gfLaeSulp1.pacbio.fa.gz
+    wget http://asg.cog.sanger.ac.uk/s2g/assembly_files.tar.gz
+    tar -zxvf /workspace/data/assembly_files.tar.gz
+    wget http://asg.cog.sanger.ac.uk/s2g/gfLaeSulp1.mkdup.bed.gz
+    # wget http://asg.cog.sanger.ac.uk/s2g/gfLaeSulp1.hic.cram
+    # wget http://asg.cog.sanger.ac.uk/s2g/gfLaeSulp1.bam
+    # wget http://asg.cog.sanger.ac.uk/s2g/gfLaeSulp1.bam.csi
+
+    chmod +x /workspace/bin/*
 
 workspaceLocation: "/workspace"
