@@ -628,7 +628,7 @@ busco \
 	--out out_scaffolds_final.basidiomycota_odb10.busco \
 	--mode genome \
 	--lineage_dataset basidiomycota_odb10
-``
+```
 
 How does our scaffolded assembly compare with our purged and raw assemblies? What stats
 have changed and what stats have not?
